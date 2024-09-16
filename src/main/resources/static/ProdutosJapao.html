@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Produtos do Japão</title>
+</head>
+<body>
+    <h1>Produtos de Fornecedores do Japão</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Preço Venda Mínimo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="product : ${productsFromJapan}">
+                <td th:text="${product.nome}"></td>
+                <td th:text="${product.descricao}"></td>
+                <td th:text="${product.preco_venda_minimo}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

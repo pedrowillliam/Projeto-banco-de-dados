@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Resumo de Armazéns</title>
+</head>
+<body>
+    <h1>Resumo de Armazéns e Estoques</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nome Armazém</th>
+                <th>Código Estoque</th>
+                <th>Nome Categoria</th>
+                <th>Total Quantidade</th>
+                <th>Média Quantidade</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item : ${warehouseStockSummary}">
+                <td th:text="${item.NomeArmazem}"></td>
+                <td th:text="${item.CodigoEstoque}"></td>
+                <td th:text="${item.NomeCategoria}"></td>
+                <td th:text="${item.TotalQuantidade}"></td>
+                <td th:text="${item.MediaQuantidade}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
