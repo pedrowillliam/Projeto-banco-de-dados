@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos em Armazéns</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #000;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Produtos com Diferença de Preço Menor que R$2000 e Armazenados em 5 ou Mais Armazéns</h1>
+
+    <table id="produtosTable">
+        <thead>
+            <tr>
+                <th>Nome do Produto</th>
+                <th>Data de Garantia</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Dados serão inseridos aqui pelo JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+        fetch('/produtos-armazens')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector('#produtosTable tbody');
+                data.forEach(produto => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${produto.nome}</td>
+                        <td>${produto.data_garantia}</td>
+                        <td>${produto.descricao}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            });
+    </script>
+</body>
+</html>

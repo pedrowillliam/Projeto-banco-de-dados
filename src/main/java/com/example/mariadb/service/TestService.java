@@ -44,4 +44,8 @@ public class TestService {
 	public List<Map<String, Object>> getAmericanClientsWithCriteria() {
 		return resourse.getAmericanClientsWithCriteria();
 	}
+
+	public List<Map<String, Object>> getProductsWithPriceDifferenceAndWarehouseCount() {
+        return resourse.getProductsWithPriceDifferenceAndWarehouseCount();
+    }
 }
