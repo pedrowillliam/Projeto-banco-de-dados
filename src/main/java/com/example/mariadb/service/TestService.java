@@ -40,4 +40,8 @@ public class TestService {
 	public List<Map<String, Object>> getWarehouseWithElectrodomestics() {
 		return resourse.getWarehouseWithElectrodomestics();
 	}
+	// 2. Método para a consulta 2
+	public List<Map<String, Object>> getAmericanClientsWithCriteria() {
+		return resourse.getAmericanClientsWithCriteria();
+	}
 }

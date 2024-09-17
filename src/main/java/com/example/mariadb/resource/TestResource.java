@@ -77,5 +77,37 @@ public class TestResource {
         return jdbcTemplate.queryForList(sql);
     }
 
+    // 2.Listar o nome, limite de crédito, cidade e estado dos clientes americanos
+    // que já realizaram mais de 20 pedidos com o valor
+    // total de cada pedido > 10.000 e que nunca compraram produtos da
+    // categoria "Smartphone".
+    public List<Map<String, Object>> getAmericanClientsWithCriteria() {
+        String sql = """
+                SELECT c.nome, c.limite_credito, c.cidade, c.estado
+                FROM cliente c
+                JOIN pedido p ON c.id = p.cliente_id
+                WHERE c.pais = 'Estados Unidos'
+                AND p.valor_total > 10000
+                AND c.id IN (
+                    SELECT c2.id
+                    FROM cliente c2
+                    JOIN pedido p2 ON c2.id = p2.cliente_id
+                    GROUP BY c2.id
+                    HAVING COUNT(p2.id) > 20
+                )
+                AND c.id NOT IN (
+                    SELECT DISTINCT c3.id
+                    FROM cliente c3
+                    JOIN pedido p3 ON c3.id = p3.cliente_id
+                    JOIN item_pedido ip3 ON p3.id = ip3.pedido_id
+                    JOIN produto pr3 ON ip3.produto_id = pr3.id
+                    JOIN categoria cat3 ON pr3.categoria_id = cat3.id
+                    WHERE cat3.nome = 'Smartphone'
+                )
+                GROUP BY c.nome, c.limite_credito, c.cidade, c.estado""";
+
+        return jdbcTemplate.queryForList(sql);
+    }
+
 }
 
