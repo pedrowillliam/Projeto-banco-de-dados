@@ -53,6 +53,12 @@ public class TestController {
 		return service.getAmericanClientsWithCriteria();
 	}
 
+	//7.
+	@GetMapping("/produtos-armazens")
+	public List<Map<String, Object>> getProductsWithPriceDifferenceAndWarehouseCount() {
+    return service.getProductsWithPriceDifferenceAndWarehouseCount();
+	}
+	
 	//8.
 	@GetMapping("/getMinValueSoldIn2023And2024")
 	public List<Map<String, Object>> getMinValueSoldIn2023And2024(){

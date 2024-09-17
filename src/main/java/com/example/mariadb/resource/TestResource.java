@@ -105,6 +105,21 @@ public class TestResource {
         
         return jdbcTemplate.queryForList(sql);
     }
+    //7.
+    public List<Map<String, Object>> getProductsWithPriceDifferenceAndWarehouseCount() {
+        String sql = """
+            SELECT p.nome, 
+                   p.data_garantia, 
+                   p.descricao
+            FROM produtos p
+            JOIN estoques e ON p.id = e.produto_id
+            JOIN armazens a ON e.armazem_id = a.id
+            WHERE (p.preco_venda - p.preco_minimo) < 2000
+            GROUP BY p.id, p.nome, p.data_garantia, p.descricao
+            HAVING COUNT(DISTINCT e.armazem_id) >= 5
+        """;
+        return jdbcTemplate.queryForList(sql);
+    }    
 
     //8.valor mínimo vendido dos produtos em 2023 ou 2024
     public List<Map<String, Object>> getMinValueSoldIn2023And2024() {

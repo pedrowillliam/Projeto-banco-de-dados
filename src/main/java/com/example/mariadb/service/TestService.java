@@ -44,6 +44,10 @@ public class TestService {
 	public List<Map<String, Object>> getAmericanClientsWithCriteria() {
 		return resourse.getAmericanClientsWithCriteria();
 	}
+	//7. Consulta 7
+	public List<Map<String, Object>> getProductsWithPriceDifferenceAndWarehouseCount() {
+        return resourse.getProductsWithPriceDifferenceAndWarehouseCount();
+    }
 	//8. consulta 8
 	public List<Map<String, Object>> getMinValueSoldIn2023And2024(){
 		return resourse.getMinValueSoldIn2023And2024();
