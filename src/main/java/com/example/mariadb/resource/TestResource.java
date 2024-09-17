@@ -9,71 +9,74 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TestResource {
-    
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     public Integer countProduto() {
         String sql = "SELECT COUNT(*) FROM produto";
-       return jdbcTemplate.queryForObject(sql, Integer.class);
+        return jdbcTemplate.queryForObject(sql, Integer.class);
     }
 
-     public List<Map<String, Object>> getAllProducts() {
+    public List<Map<String, Object>> getAllProducts() {
         String sql = "SELECT * FROM produto";
         return jdbcTemplate.queryForList(sql);
     }
+
     public List<Map<String, Object>> getAllClients() {
         String sql = "SELECT * FROM cliente";
         return jdbcTemplate.queryForList(sql);
     }
 
-     // 1. Consulta para retornar produtos de fornecedores do Japão
-     public List<Map<String, Object>> getProductsFromJapan() {
+    // 1. Consulta para retornar produtos de fornecedores do Japão
+    public List<Map<String, Object>> getProductsFromJapan() {
         String sql = """
-            SELECT p.nome, pi.descricao, p.preco_venda_minimo
-            FROM Produto p
-            JOIN ProdutoIdioma pi ON p.produto_id = pi.produto_id
-            JOIN Fornecedor f ON p.fornecedor_id = f.fornecedor_id
-            JOIN Estoque e ON p.produto_id = e.produto_id
-            WHERE f.pais = 'Japão'
-            GROUP BY p.produto_id, p.nome, pi.descricao, p.preco_venda_minimo
-            HAVING MIN(e.quantidade) > 120""";
-        
-        return jdbcTemplate.queryForList(sql);
-     }
-
-     // 4. Método para retornar dados de armazéns e estoques com soma de quantidade >= 200
-     public List<Map<String, Object>> getWarehouseStockSummary() {
-        String sql = """
-            SELECT a.nome AS NomeArmazem, 
-                   e.codigo AS CodigoEstoque, 
-                   c.nome AS NomeCategoria, 
-                   SUM(e.quantidade) AS TotalQuantidade, 
-                   AVG(e.quantidade) AS MediaQuantidade
-            FROM Estoque e
-            JOIN Armazem a ON e.armazem_id = a.armazem_id
-            JOIN Produto p ON e.produto_id = p.produto_id
-            JOIN Categoria c ON p.categoria_id = c.categoria_id
-            GROUP BY a.nome, e.codigo, c.nome
-            HAVING SUM(e.quantidade) >= 200
-        """;
+                SELECT p.nome, pi.descricao, p.preco_venda_minimo
+                FROM Produto p
+                JOIN ProdutoIdioma pi ON p.produto_id = pi.produto_id
+                JOIN Fornecedor f ON p.fornecedor_id = f.fornecedor_id
+                JOIN Estoque e ON p.produto_id = e.produto_id
+                WHERE f.pais = 'Japão'
+                GROUP BY p.produto_id, p.nome, pi.descricao, p.preco_venda_minimo
+                HAVING MIN(e.quantidade) > 120""";
 
         return jdbcTemplate.queryForList(sql);
     }
 
-     //3. nome e endereço dos armazéns com pelo menos 200 estoques de produtos eletrodomésticos e < 1000 total
-     public List<Map<String, Object>> getWarehouseWithElectrodomestics() {
+    // 4. Método para retornar dados de armazéns e estoques com soma de quantidade
+    // >= 200
+    public List<Map<String, Object>> getWarehouseStockSummary() {
         String sql = """
-            SELECT a.nome AS NomeArmazem, 
-                a.endereco AS Endereco
-            FROM Armazem a
-            JOIN Estoque e ON a.armazem_id = e.armazem_id
-            JOIN Produto p ON e.produto_id = p.produto_id
-            JOIN Categoria c ON p.categoria_id = c.categoria_id
-            WHERE c.nome = 'Eletrodomésticos'
-            GROUP BY a.armazem_id, a.nome, a.endereco
-            HAVING SUM(e.quantidade) >= 200 AND SUM(e.quantidade) < 1000
-        """;
+                    SELECT a.nome AS NomeArmazem,
+                           e.codigo AS CodigoEstoque,
+                           c.nome AS NomeCategoria,
+                           SUM(e.quantidade) AS TotalQuantidade,
+                           AVG(e.quantidade) AS MediaQuantidade
+                    FROM Estoque e
+                    JOIN Armazem a ON e.armazem_id = a.armazem_id
+                    JOIN Produto p ON e.produto_id = p.produto_id
+                    JOIN Categoria c ON p.categoria_id = c.categoria_id
+                    GROUP BY a.nome, e.codigo, c.nome
+                    HAVING SUM(e.quantidade) >= 200
+                """;
+
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    // 3. nome e endereço dos armazéns com pelo menos 200 estoques de produtos
+    // eletrodomésticos e < 1000 total
+    public List<Map<String, Object>> getWarehouseWithElectrodomestics() {
+        String sql = """
+                    SELECT a.nome AS NomeArmazem,
+                        a.endereco AS Endereco
+                    FROM Armazem a
+                    JOIN Estoque e ON a.armazem_id = e.armazem_id
+                    JOIN Produto p ON e.produto_id = p.produto_id
+                    JOIN Categoria c ON p.categoria_id = c.categoria_id
+                    WHERE c.nome = 'Eletrodomésticos'
+                    GROUP BY a.armazem_id, a.nome, a.endereco
+                    HAVING SUM(e.quantidade) >= 200 AND SUM(e.quantidade) < 1000
+                """;
         return jdbcTemplate.queryForList(sql);
     }
 
@@ -83,66 +86,88 @@ public class TestResource {
     // categoria "Smartphone".
     public List<Map<String, Object>> getAmericanClientsWithCriteria() {
         String sql = """
-            SELECT c.Nome, c.Limite_credito, c.Cidade, c.Estado
-            FROM Cliente c
-            JOIN Pedido p ON c.Cliente_id = p.Cliente_id
-            JOIN produto_pedido pp ON p.Pedido_id = pp.Pedido_id
-            JOIN Produto prod ON pp.Produto_id = prod.Produto_id
-            JOIN Categoria cat ON prod.Categoria_id = cat.Categoria_id
-            WHERE c.País = 'Estados Unidos'
-              AND p.Pedido_id NOT IN (
-                  SELECT p.Pedido_id
-                  FROM Pedido p
-                  JOIN produto_pedido pp ON p.Pedido_id = pp.Pedido_id
-                  JOIN Produto prod ON pp.Produto_id = prod.Produto_id
-                  JOIN Categoria cat ON prod.Categoria_id = cat.Categoria_id
-                  WHERE cat.nome = 'Smartphone'
-              )
-            GROUP BY c.Cliente_id
-            HAVING COUNT(DISTINCT p.Pedido_id) > 20
-               AND SUM(pp.Quantidade * pp.preco_venda_aplicado) > 10000
-        """;
-        
+                    SELECT c.Nome, c.Limite_credito, c.Cidade, c.Estado
+                    FROM Cliente c
+                    JOIN Pedido p ON c.Cliente_id = p.Cliente_id
+                    JOIN produto_pedido pp ON p.Pedido_id = pp.Pedido_id
+                    JOIN Produto prod ON pp.Produto_id = prod.Produto_id
+                    JOIN Categoria cat ON prod.Categoria_id = cat.Categoria_id
+                    WHERE c.País = 'Estados Unidos'
+                      AND p.Pedido_id NOT IN (
+                          SELECT p.Pedido_id
+                          FROM Pedido p
+                          JOIN produto_pedido pp ON p.Pedido_id = pp.Pedido_id
+                          JOIN Produto prod ON pp.Produto_id = prod.Produto_id
+                          JOIN Categoria cat ON prod.Categoria_id = cat.Categoria_id
+                          WHERE cat.nome = 'Smartphone'
+                      )
+                    GROUP BY c.Cliente_id
+                    HAVING COUNT(DISTINCT p.Pedido_id) > 20
+                       AND SUM(pp.Quantidade * pp.preco_venda_aplicado) > 10000
+                """;
+
         return jdbcTemplate.queryForList(sql);
     }
-    //7.
+
+    // 7.
     public List<Map<String, Object>> getProductsWithPriceDifferenceAndWarehouseCount() {
         String sql = """
-            SELECT p.nome, 
-                   p.data_garantia, 
-                   p.descricao
-            FROM produtos p
-            JOIN estoques e ON p.id = e.produto_id
-            JOIN armazens a ON e.armazem_id = a.id
-            WHERE (p.preco_venda - p.preco_minimo) < 2000
-            GROUP BY p.id, p.nome, p.data_garantia, p.descricao
-            HAVING COUNT(DISTINCT e.armazem_id) >= 5
-        """;
-        return jdbcTemplate.queryForList(sql);
-    }    
-
-    //8.valor mínimo vendido dos produtos em 2023 ou 2024
-    public List<Map<String, Object>> getMinValueSoldIn2023And2024() {
-        String sql = """
-            SELECT 
-                p.nome AS NomeProduto,
-                p.preco_venda AS preco_tabela,
-                p.preco_venda_minimo AS preco_minimo,
-                COALESCE(MIN(pp.preco_venda_aplicado), p.preco_venda) AS valor_minimo_vendido
-            FROM
-                produto p
-            LEFT JOIN
-                produto_pedido pp ON p.produto_id = pp.produto_id
-            LEFT JOIN
-                pedido ped ON pp.pedido_id = ped.pedido_id
-            WHERE
-                ped.data_pedido BETWEEN '2023-01-01' AND '2024-12-31'
-            GROUP BY
-                p.produto_id, p.preco_venda, p.preco_venda_minimo, p.nome
-            ORDER BY
-                p.produto_id
-        """;
+                    SELECT p.nome,
+                           p.data_garantia,
+                           p.descricao
+                    FROM produtos p
+                    JOIN estoques e ON p.id = e.produto_id
+                    JOIN armazens a ON e.armazem_id = a.id
+                    WHERE (p.preco_venda - p.preco_minimo) < 2000
+                    GROUP BY p.id, p.nome, p.data_garantia, p.descricao
+                    HAVING COUNT(DISTINCT e.armazem_id) >= 5
+                """;
         return jdbcTemplate.queryForList(sql);
     }
-}
 
+    // 8.valor mínimo vendido dos produtos em 2023 ou 2024
+    public List<Map<String, Object>> getMinValueSoldIn2023And2024() {
+        String sql = """
+                    SELECT
+                        p.nome AS NomeProduto,
+                        p.preco_venda AS preco_tabela,
+                        p.preco_venda_minimo AS preco_minimo,
+                        COALESCE(MIN(pp.preco_venda_aplicado), p.preco_venda) AS valor_minimo_vendido
+                    FROM
+                        produto p
+                    LEFT JOIN
+                        produto_pedido pp ON p.produto_id = pp.produto_id
+                    LEFT JOIN
+                        pedido ped ON pp.pedido_id = ped.pedido_id
+                    WHERE
+                        ped.data_pedido BETWEEN '2023-01-01' AND '2024-12-31'
+                    GROUP BY
+                        p.produto_id, p.preco_venda, p.preco_venda_minimo, p.nome
+                    ORDER BY
+                        p.produto_id
+                """;
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    // 5. Consulta para obter as 8 categorias de produto com maior faturamento nos
+    // últimos 6 meses de cada um dos últimos 5 anos
+    public List<Map<String, Object>> getTopCategoriesLast6Months() {
+        String sql = """
+                    SELECT c.nome AS CategoriaProduto,
+                           SUM(pp.quantidade * pp.preco_venda_aplicado) AS TotalFaturamento,
+                           YEAR(ped.data_pedido) AS Ano
+                    FROM produto_pedido pp
+                    JOIN produto p ON pp.produto_id = p.produto_id
+                    JOIN categoria c ON p.categoria_id = c.categoria_id
+                    JOIN pedido ped ON pp.pedido_id = ped.pedido_id
+                    WHERE ped.data_pedido >= DATE_SUB(CURDATE(), INTERVAL 5 YEAR)
+                    AND ped.data_pedido >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+                    GROUP BY c.nome, Ano
+                    ORDER BY TotalFaturamento DESC
+                    LIMIT 8;
+                """;
+
+        return jdbcTemplate.queryForList(sql);
+    }
+
+}
