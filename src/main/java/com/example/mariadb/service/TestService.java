@@ -31,9 +31,13 @@ public class TestService {
 		return resourse.getProductsFromJapan();
 	}
 
-	// 4. Método para retornar dados de armazéns e estoques com soma de quantidade
-	// >= 200
-	public List<Map<String, Object>> getWarehouseStockSummary() {
+	// 4. Método para retornar dados de armazéns e estoques com soma de quantidade >= 200
+	public List<Map<String, Object>> getWarehouseStockSummary(){
 		return resourse.getWarehouseStockSummary();
+	}
+
+	//3. nome e endereço dos armazéns com pelo menos 200 estoques de produtos eletrodomésticos e < 1000 total
+	public List<Map<String, Object>> getWarehouseWithElectrodomestics() {
+		return resourse.getWarehouseWithElectrodomestics();
 	}
 }

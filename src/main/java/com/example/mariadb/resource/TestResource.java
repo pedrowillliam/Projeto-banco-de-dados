@@ -59,5 +59,23 @@ public class TestResource {
         """;
 
         return jdbcTemplate.queryForList(sql);
-     }
+    }
+
+     //3. nome e endereço dos armazéns com pelo menos 200 estoques de produtos eletrodomésticos e < 1000 total
+     public List<Map<String, Object>> getWarehouseWithElectrodomestics() {
+        String sql = """
+            SELECT a.nome AS NomeArmazem, 
+                a.endereco AS Endereco
+            FROM Armazem a
+            JOIN Estoque e ON a.armazem_id = e.armazem_id
+            JOIN Produto p ON e.produto_id = p.produto_id
+            JOIN Categoria c ON p.categoria_id = c.categoria_id
+            WHERE c.nome = 'Eletrodomésticos'
+            GROUP BY a.armazem_id, a.nome, a.endereco
+            HAVING SUM(e.quantidade) >= 200 AND SUM(e.quantidade) < 1000
+        """;
+        return jdbcTemplate.queryForList(sql);
+    }
+
 }
+
