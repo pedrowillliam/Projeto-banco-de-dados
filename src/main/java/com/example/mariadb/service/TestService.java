@@ -22,6 +22,10 @@ public class TestService {
 		return resourse.getAllProducts();
 	}
 
+	public List<Map<String, Object>> getAllClients() {
+		return resourse.getAllClients();
+	}
+
 //	 1. Consulta para retornar produtos de fornecedores do Japão
 	public List<Map<String, Object>> getProductsFromJapan() {
 		return resourse.getProductsFromJapan();

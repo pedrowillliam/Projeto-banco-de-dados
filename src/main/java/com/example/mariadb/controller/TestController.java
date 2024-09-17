@@ -24,6 +24,11 @@ public class TestController {
 		return service.getAllProducts();
 	}
 
+	@GetMapping("/getAllClients")
+	public List<Map<String, Object>> getAllClients() {
+		return service.getAllClients();
+	}
+
 	// 1. Consulta para retornar produtos de fornecedores do Japão
     @GetMapping("/getProductsFromJapan")
 	public List<Map<String, Object>> getProductsFromJapan() {

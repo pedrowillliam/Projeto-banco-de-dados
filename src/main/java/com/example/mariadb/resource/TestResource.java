@@ -22,6 +22,10 @@ public class TestResource {
         String sql = "SELECT * FROM produto";
         return jdbcTemplate.queryForList(sql);
     }
+    public List<Map<String, Object>> getAllClients() {
+        String sql = "SELECT * FROM cliente";
+        return jdbcTemplate.queryForList(sql);
+    }
 
      // 1. Consulta para retornar produtos de fornecedores do Japão
      public List<Map<String, Object>> getProductsFromJapan() {
