@@ -47,7 +47,7 @@ public class TestController {
 		return service.getWarehouseWithElectrodomestics();
 	}
 
-	//3.
+	//2.
 	@GetMapping("/getAmericanClientsWithCriteria")
 	public List<Map<String, Object>> getAmericanClientsWithCriteria() {
 		return service.getAmericanClientsWithCriteria();

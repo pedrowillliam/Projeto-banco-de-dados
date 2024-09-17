@@ -43,13 +43,14 @@
                     noDataMessage.style.display = 'block';
                 } else {
                     // Se há dados, preencher a tabela
+                    tableBody.innerHTML = ''; // Limpar a tabela antes de adicionar novos dados
                     data.forEach(client => {
                         const row = document.createElement("tr");
                         row.innerHTML = `
-                            <td>${client.nome}</td>
-                            <td>${client.limite_credito}</td>
-                            <td>${client.cidade}</td>
-                            <td>${client.estado}</td>
+                            <td>${client.Nome || 'N/A'}</td>
+                            <td>${client.Limite_credito || 'N/A'}</td>
+                            <td>${client.Cidade || 'N/A'}</td>
+                            <td>${client.Estado || 'N/A'}</td>
                         `;
                         tableBody.appendChild(row);
                     });
