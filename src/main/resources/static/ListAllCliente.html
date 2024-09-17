@@ -8,28 +8,35 @@
     <script>
         // Função para buscar e exibir todos os clientes
         async function fetchClientes() {
-            const response = await fetch('/getAllClients');
-            const clientes = await response.json();
+            try {
+                const response = await fetch('/getAllClients');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const clientes = await response.json();
 
-            const tableBody = document.getElementById('cliente-table-body');
-            tableBody.innerHTML = ''; // Limpa a tabela
+                const tableBody = document.getElementById('cliente-table-body');
+                tableBody.innerHTML = ''; // Limpa a tabela
 
-            clientes.forEach(cliente => {
-                const row = `
-                    <tr>
-                        <td>${cliente.id}</td>
-                        <td>${cliente.nome}</td>
-                        <td>${cliente.cidade}</td>
-                        <td>${cliente.estado}</td>
-                        <td>${cliente.pais}</td>
-                        <td>${cliente.cpf}</td>
-                        <td>${cliente.data_cadastro !== null ? new Date(cliente.data_cadastro).toLocaleDateString() : 'N/A'}</td>
-                        <td>${cliente.endereco}</td>
-                        <td>${cliente.limite_credito !== null ? cliente.limite_credito.toFixed(2) : 'N/A'}</td>
-                    </tr>
-                `;
-                tableBody.innerHTML += row;
-            });
+                clientes.forEach(cliente => {
+                    const row = `
+                        <tr>
+                            <td>${cliente.Cliente_id}</td>
+                            <td>${cliente.Nome}</td>
+                            <td>${cliente.Cidade}</td>
+                            <td>${cliente.Estado}</td>
+                            <td>${cliente['País']}</td>
+                            <td>${cliente.CPF}</td>
+                            <td>${cliente.Data_cadastro !== null ? new Date(cliente.Data_cadastro).toLocaleDateString() : 'N/A'}</td>
+                            <td>${cliente['Endereço']}</td>
+                            <td>${cliente.Limite_credito !== null ? cliente.Limite_credito.toFixed(2) : 'N/A'}</td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            }
         }
 
         // Carrega os clientes ao carregar a página
