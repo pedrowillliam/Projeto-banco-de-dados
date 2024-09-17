@@ -84,24 +84,24 @@ public class TestResource {
     public List<Map<String, Object>> getAmericanClientsWithCriteria() {
         String sql = """
                 SELECT c.nome, c.limite_credito, c.cidade, c.estado
-                FROM clientes c
-                JOIN pedidos p ON c.id = p.cliente_id
+                FROM cliente c
+                JOIN pedido p ON c.id = p.cliente_id
                 WHERE c.pais = 'Estados Unidos'
                 AND p.valor_total > 10000
                 AND c.id IN (
                     SELECT c2.id
-                    FROM clientes c2
-                    JOIN pedidos p2 ON c2.id = p2.cliente_id
+                    FROM cliente c2
+                    JOIN pedido p2 ON c2.id = p2.cliente_id
                     GROUP BY c2.id
                     HAVING COUNT(p2.id) > 20
                 )
                 AND c.id NOT IN (
                     SELECT DISTINCT c3.id
-                    FROM clientes c3
-                    JOIN pedidos p3 ON c3.id = p3.cliente_id
+                    FROM cliente c3
+                    JOIN pedido p3 ON c3.id = p3.cliente_id
                     JOIN item_pedido ip3 ON p3.id = ip3.pedido_id
-                    JOIN produtos pr3 ON ip3.produto_id = pr3.id
-                    JOIN categorias cat3 ON pr3.categoria_id = cat3.id
+                    JOIN produto pr3 ON ip3.produto_id = pr3.id
+                    JOIN categoria cat3 ON pr3.categoria_id = cat3.id
                     WHERE cat3.nome = 'Smartphone'
                 )
                 GROUP BY c.nome, c.limite_credito, c.cidade, c.estado""";
