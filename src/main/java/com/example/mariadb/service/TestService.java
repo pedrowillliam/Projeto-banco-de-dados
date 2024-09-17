@@ -44,4 +44,8 @@ public class TestService {
 	public List<Map<String, Object>> getAmericanClientsWithCriteria() {
 		return resourse.getAmericanClientsWithCriteria();
 	}
+	//8. consulta 8
+	public List<Map<String, Object>> getMinValueSoldIn2023And2024(){
+		return resourse.getMinValueSoldIn2023And2024();
+	}
 }

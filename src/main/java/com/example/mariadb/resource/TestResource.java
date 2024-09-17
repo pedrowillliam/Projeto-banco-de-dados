@@ -106,5 +106,28 @@ public class TestResource {
         return jdbcTemplate.queryForList(sql);
     }
 
+    //8.valor mínimo vendido dos produtos em 2023 ou 2024
+    public List<Map<String, Object>> getMinValueSoldIn2023And2024() {
+        String sql = """
+            SELECT 
+                p.nome AS NomeProduto,
+                p.preco_venda AS preco_tabela,
+                p.preco_venda_minimo AS preco_minimo,
+                COALESCE(MIN(pp.preco_venda_aplicado), p.preco_venda) AS valor_minimo_vendido
+            FROM
+                produto p
+            LEFT JOIN
+                produto_pedido pp ON p.produto_id = pp.produto_id
+            LEFT JOIN
+                pedido ped ON pp.pedido_id = ped.pedido_id
+            WHERE
+                ped.data_pedido BETWEEN '2023-01-01' AND '2024-12-31'
+            GROUP BY
+                p.produto_id, p.preco_venda, p.preco_venda_minimo, p.nome
+            ORDER BY
+                p.produto_id
+        """;
+        return jdbcTemplate.queryForList(sql);
+    }
 }
 
